@@ -100,6 +100,6 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
-const port = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(port);
 console.log(`Server running on port ${port}`);
