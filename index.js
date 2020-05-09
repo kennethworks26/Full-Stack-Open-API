@@ -94,6 +94,30 @@ app.delete("/api/persons/:id", async (req, res) => {
   }
 });
 
+// updateOne
+app.put("/api/persons/:id", async (req, res) => {
+  try {
+    const updatedDoc = await Person.findOneAndUpdate(
+      {
+        _id: req.params.id
+      },
+      req.body,
+      { new: true }
+    )
+      .lean()
+      .exec();
+
+    if (!updatedDoc) {
+      return res.status(400).end();
+    }
+
+    res.status(200).json({ data: updatedDoc });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
+  }
+});
+
 const PORT = process.env.PORT;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
