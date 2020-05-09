@@ -15,7 +15,7 @@ mongoose
 
 const personSchema = new mongoose.Schema({
   name: String,
-  number: Date
+  number: String
 });
 
 module.exports = mongoose.model("Person", personSchema);

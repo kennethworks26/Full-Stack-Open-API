@@ -56,42 +56,26 @@ app.get("/api/persons", async (req, res) => {
   }
 });
 
-const generateId = () => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map(n => n.id)) : 0;
-  return maxId + 1;
-};
+app.post("/api/persons", async (req, res) => {
+  try {
+    if (!req.body.name) {
+      return res.status(400).json({
+        error: "name is missing"
+      });
+    }
 
-app.post("/api/persons", (req, res) => {
-  const body = req.body;
+    if (!req.body.number) {
+      return res.status(400).json({
+        error: "number is missing"
+      });
+    }
 
-  if (!body.name) {
-    return res.status(400).json({
-      error: "name is missing"
-    });
+    const doc = await Person.create({ ...req.body });
+    res.status(201).json({ data: doc });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
   }
-
-  if (!body.number) {
-    return res.status(400).json({
-      error: "number is missing"
-    });
-  }
-
-  const existingPerson = persons.find(person => person.name === body.name);
-  if (existingPerson) {
-    return res.status(400).json({
-      error: "name must be unique"
-    });
-  }
-
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateId()
-  };
-
-  persons = persons.concat(person);
-
-  res.json(person);
 });
 
 app.get("/api/persons/:id", (req, res) => {
