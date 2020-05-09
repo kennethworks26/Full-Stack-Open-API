@@ -18,12 +18,22 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model("Person", personSchema);
 
-const person = new Person({
-  name: "Kenneth Fernandez",
-  number: "09771022680"
-});
+if (process.argv[3] && process.argv[4]) {
+  const person = new Person({
+    name: process.argv[3],
+    number: process.argv[4]
+  });
 
-person.save().then(response => {
-  console.log(`added ${response.name} number ${response.number} to phonebook!`);
-  mongoose.connection.close();
-});
+  person.save().then(response => {
+    console.log(
+      `added ${response.name} number ${response.number} to phonebook!`
+    );
+    mongoose.connection.close();
+  });
+} else {
+  console.log("phonebook");
+  Person.find({}).then(persons => {
+    persons.map(person => console.log(`${person.name} ${person.number}`));
+    mongoose.connection.close();
+  });
+}
