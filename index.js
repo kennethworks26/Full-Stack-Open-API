@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("build"));
 
+// Logging
 morgan.token("body", function(req, res) {
   return JSON.stringify(req.body);
 });
@@ -19,30 +20,7 @@ app.use(
   )
 );
 
-let persons = [
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2
-  },
-  {
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-    id: 4
-  }
-];
-
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World!</h1>");
-});
-
-app.get("/info", (req, res) => {
-  res.send(
-    `<h1>Phonebook has info for ${persons.length} people</h1>
-    <p>${new Date()}</p>`
-  );
-});
-
+// getMany
 app.get("/api/persons", async (req, res) => {
   try {
     const docs = await Person.find({})
@@ -56,7 +34,9 @@ app.get("/api/persons", async (req, res) => {
   }
 });
 
+// createOne
 app.post("/api/persons", async (req, res) => {
+  console.log(req);
   try {
     if (!req.body.name) {
       return res.status(400).json({
@@ -78,22 +58,40 @@ app.post("/api/persons", async (req, res) => {
   }
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(person => person.id === id);
+// getOne
+app.get("/api/persons/:id", async (req, res) => {
+  try {
+    const doc = await Person.findOne({ _id: req.params.id })
+      .lean()
+      .exec();
 
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
+    if (!doc) {
+      return res.status(400).end();
+    }
+
+    res.status(200).json({ data: doc });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
   }
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  persons.filter(person => person.id !== id);
+// removeOne
+app.delete("/api/persons/:id", async (req, res) => {
+  try {
+    const removed = await Person.findOneAndRemove({
+      _id: req.params.id
+    });
 
-  res.status(204).end();
+    if (!removed) {
+      return res.status(400).end();
+    }
+
+    return res.status(200).json({ data: removed });
+  } catch (e) {
+    console.error(e);
+    res.status(400).end();
+  }
 });
 
 const PORT = process.env.PORT;
