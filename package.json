@@ -11,7 +11,7 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "author": "Kenneth Fernandez",
   "license": "ISC",
@@ -24,6 +24,10 @@
   },
   "devDependencies": {
     "eslint": "^7.0.0",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
