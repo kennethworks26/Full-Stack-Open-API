@@ -47,6 +47,10 @@ describe("favorite blog", () => {
 
   test("when list has the most likes", () => {
     const result = listHelper.favoriteBlog(listWithOneBlog);
-    expect(result).toEqual(10);
+    expect(result).toEqual({
+      title: "Hardcore",
+      author: "Ken W. Astra",
+      likes: 10,
+    });
   });
 });
