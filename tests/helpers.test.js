@@ -25,3 +25,28 @@ describe("total likes", () => {
     expect(result).toBe(5);
   });
 });
+
+describe("favorite blog", () => {
+  const listWithOneBlog = [
+    {
+      title: "Least",
+      author: "John W. Dija",
+      likes: 5,
+    },
+    {
+      title: "Medium",
+      author: "Yu W. Stra",
+      likes: 6,
+    },
+    {
+      title: "Hardcore",
+      author: "Ken W. Astra",
+      likes: 10,
+    },
+  ];
+
+  test("when list has the most likes", () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog);
+    expect(result).toEqual(10);
+  });
+});
